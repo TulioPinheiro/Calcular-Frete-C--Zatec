@@ -16,8 +16,8 @@ namespace Calcular_Frete_C__Zatec
         float kmRodados = 0;
         float KmAutonomia = 0;
         float QtdCombustivel = 0;
-        double ValorCombustivel,CustoCombustivel ;
-        
+        double ValorCombustivel, CustoCombustivel;
+
 
         public Principal()
         {
@@ -65,9 +65,27 @@ namespace Calcular_Frete_C__Zatec
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+        private void Confirma_Click(object sender, EventArgs e)
         {
-            // 1. Pega a distância e trata ponto/vírgula
+            // Verificar se todos os campos foram preenchidos
+
+            if (string.IsNullOrWhiteSpace(txtLocalidade.Text) ||
+                string.IsNullOrWhiteSpace(comboBox1.Text) ||
+                string.IsNullOrWhiteSpace(txtDistancia.Text) ||
+                string.IsNullOrWhiteSpace(txtAutonomia.Text) ||
+                string.IsNullOrWhiteSpace(txtValorporLitro.Text))
+            {
+                MessageBox.Show("Por favor, preencha todos os campos obrigatórios.");
+                txtLocalidade.BackColor = Color.LightCoral;
+                comboBox1.BackColor = Color.LightCoral;
+                txtDistancia.BackColor = Color.LightCoral;
+                txtAutonomia.BackColor = Color.LightCoral;
+                txtValorporLitro.BackColor = Color.LightCoral;
+                txtAutonomia.BackColor = Color.LightCoral;
+                return; // Sai do método se algum campo estiver vazio
+            }
+
             float kmRodados = float.Parse(txtDistancia.Text.Replace(".", ","));
 
             // 2. Verifica se é ida e volta
@@ -91,9 +109,9 @@ namespace Calcular_Frete_C__Zatec
             double CustoCombustivel = valorPorLitro * QtdCombustivel;
             txtDespesaCombustivel.Text = CustoCombustivel.ToString("N2");
 
-            
+
             // CÁLCULO DO FRETE (O QUE VOCÊ COBRA DO CLIENTE)
-          
+
 
             // Pega o valor do KM do ComboBox ( 3 ou 2,50)
             double valorPorKMCobrado = double.Parse(comboBox1.Text.Replace(".", ",")); //
@@ -104,6 +122,29 @@ namespace Calcular_Frete_C__Zatec
             // Calcula o Total do Frete: KM Total x Valor do KM cobrado (Ex: 70 x 3 = 210)
             double valorTotalFrete = kmDobrado * valorPorKMCobrado;
             txtTotal.Text = valorTotalFrete.ToString("N2");
+        }
+
+        private void txtLocalidade_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Permite apenas letras, espaços e backspace
+            if(e.KeyChar == (char)Keys.Back || e.KeyChar == (char)Keys.Space || char.IsLetter(e.KeyChar))// Permite apenas letras, espaços e backspace
+            {
+                e.Handled = false; // Permite a entrada
+            }
+            else
+            {
+                e.Handled = true; // Bloqueia a entrada
+            }
+        }
+
+        // metodo para verificar se os campos são apenas numeros no txtDistancia
+        private void txtDistancia_KeyPress(object sender, KeyPressEventArgs evento)
+        {
+            // Permite apenas números, vírgula e ponto
+            if (!char.IsControl(evento.KeyChar) && !char.IsDigit(evento.KeyChar) && evento.KeyChar != ',' && evento.KeyChar != '.')// Permite apenas números, vírgula e ponto
+            {
+                evento.Handled = true;// Impede a entrada de caracteres inválidos
+            }
         }
     }
 }
